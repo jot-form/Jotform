@@ -4,80 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Métodos de Exclusión</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f9f9f9;
-        }
-        h1, h2 {
-            text-align: center;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .edit-input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-        }
-        .image-list {
-            display: flex;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-        .image-item {
-            position: relative;
-            margin: 10px;
-        }
-        img {
-            max-width: 150px; /* Tamaño de la imagen aumentado */
-            max-height: 150px;
-            border-radius: 4px;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-        button {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 15px;
-            border: none;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .method-container {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 20px;
-        }
-        .method-header {
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .delete-button {
-            background-color: red;
-            margin-left: 10px;
-            border: none;
-            color: white;
-            cursor: pointer;
-            border-radius: 5px;
-            padding: 5px;
-        }
-        .delete-button:hover {
-            background-color: darkred;
-        }
-    </style>
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
     <script>
@@ -246,69 +174,73 @@
 </head>
 <body>
     <div class="container">
-        <h1>Formulario de Métodos de Exclusión</h1>
+        <h1 class="text-center">Formulario de Métodos de Exclusión</h1>
 
-        <form onsubmit="event.preventDefault(); agregarFormulario();">
-            <div class="question">
+        <form onsubmit="event.preventDefault(); agregarFormulario();" class="mt-4">
+            <div class="form-group">
                 <label for="pregunta1">Nombre de Área:</label>
-                <input type="text" id="pregunta1" class="edit-input" placeholder="Escribe tu respuesta aquí..." required>
+                <input type="text" id="pregunta1" class="form-control" placeholder="Escribe tu respuesta aquí..." required>
             </div>
-            <div class="question">
+            <div class="form-group">
                 <label for="pregunta2">Ubicación:</label>
-                <input type="text" id="pregunta2" class="edit-input" placeholder="Escribe tu respuesta aquí..." required>
+                <input type="text" id="pregunta2" class="form-control" placeholder="Escribe tu respuesta aquí..." required>
             </div>
-            <label for="materiales">Material:</label>
-            <select id="materiales" required>
-                <option value="" disabled selected>Seleccione</option>
-                <option value="malla_cedazo">Malla Cedazo</option>
-                <option value="malla_anti_paloma">Malla Anti Paloma</option>
-                <option value="angeo_metalico">Ángel Metálico</option>
-                <option value="espuma_polietileno">Espuma Polietileno</option>
-                <option value="cemento">Cemento</option>
-                <option value="tornilleria">Tornillería</option>
-                <option value="banda">Banda</option>
-                <option value="perfil_metalico_pisador">Perfil Metálico Pisador</option>
-                <option value="espigas_metalicas">Espigas Metálicas</option>
-                <option value="silicona">Silicona</option>
-            </select>
-            <div class="question">
+            <div class="form-group">
+                <label for="materiales">Material:</label>
+                <select id="materiales" class="form-control" required>
+                    <option value="" disabled selected>Seleccione</option>
+                    <option value="malla_cedazo">Malla Cedazo</option>
+                    <option value="malla_anti_paloma">Malla Anti Paloma</option>
+                    <option value="angeo_metalico">Angeo Metálico</option>
+                    <option value="espuma_polietileno">Espuma Polietileno</option>
+                    <option value="cemento">Cemento</option>
+                    <option value="tornilleria">Tornillería</option>
+                    <option value="banda">Banda</option>
+                    <option value="perfil_metalico_pisador">Perfil Metálico Pisador</option>
+                    <option value="espigas_metalicas">Espigas Metálicas</option>
+                    <option value="silicona">Silicona</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="ancho">Ancho:</label>
-                <input type="text" id="ancho" class="edit-input" placeholder="Escribe tu respuesta aquí..." required>
+                <input type="text" id="ancho" class="form-control" placeholder="Escribe tu respuesta aquí..." required>
             </div>
-            <div class="question">
+            <div class="form-group">
                 <label for="largo">Largo:</label>
-                <input type="text" id="largo" class="edit-input" placeholder="Escribe tu respuesta aquí..." required>
+                <input type="text" id="largo" class="form-control" placeholder="Escribe tu respuesta aquí..." required>
             </div>
-            <div class="question">
+            <div class="form-group">
                 <label for="alto">Alto:</label>
-                <input type="text" id="alto" class="edit-input" placeholder="Escribe tu respuesta aquí..." required>
+                <input type="text" id="alto" class="form-control" placeholder="Escribe tu respuesta aquí..." required>
             </div>
-            <div class="question">
+            <div class="form-group">
                 <label for="cantidad">Cantidad:</label>
-                <input type="text" id="cantidad" class="edit-input" placeholder="Escribe tu respuesta aquí..." required>
+                <input type="text" id="cantidad" class="form-control" placeholder="Escribe tu respuesta aquí..." required>
             </div>
-            <label for="tipoExclusion">Tipo de Exclusión:</label>
-            <select id="tipoExclusion" required>
-                <option value="" disabled selected>Seleccione</option>
-                <option value="angeo">Ángel</option>
-                <option value="banda">Banda</option>
-                <option value="mallas">Mallas</option>  
-                <option value="cemento">Cemento</option>
-                <option value="espuma">Espuma</option>
-                <option value="red">Red</option>
-            </select>
-            <div class="question">
+            <div class="form-group">
+                <label for="tipoExclusion">Tipo de Exclusión:</label>
+                <select id="tipoExclusion" class="form-control" required>
+                    <option value="" disabled selected>Seleccione</option>
+                    <option value="angeo">Angeo</option>
+                    <option value="banda">Banda</option>
+                    <option value="mallas">Mallas</option>  
+                    <option value="cemento">Cemento</option>
+                    <option value="espuma">Espuma</option>
+                    <option value="red">Red</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="observaciones">Observaciones:</label>
-                <input type="text" id="observaciones" class="edit-input" placeholder="Escribe tu respuesta aquí...">
+                <input type="text" id="observaciones" class="form-control" placeholder="Escribe tu respuesta aquí...">
             </div>
 
-            <button type="submit">Agregar Método de Exclusión</button>
+            <button type="submit" class="btn btn-primary">Agregar Método de Exclusión</button>
         </form>
 
-        <h2>Métodos de Exclusión Agregados</h2>
+        <h2 class="mt-4">Métodos de Exclusión Agregados</h2>
         <div id="metodosContainer"></div>
         
-        <button onclick="generarPDF()">Generar PDF</button>
+        <button onclick="generarPDF()" class="btn btn-success mt-3">Generar PDF</button>
     </div>
 </body>
 </html>
