@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Imágenes a PDF</title>
+    <title>Formulario de Métodos de Exclusión</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,30 +14,33 @@
             text-align: center;
         }
         .container {
-            width: 60%;
+            width: 80%;
             margin: auto;
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        table {
+        .edit-input {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+            padding: 8px;
+            margin-bottom: 10px;
         }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ccc;
-            text-align: left;
+        .image-list {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 10px;
         }
-        th {
-            background-color: #eaeaea;
+        .image-item {
+            position: relative;
+            margin: 10px;
         }
         img {
-            max-width: 100px;
-            max-height: 100px;
+            max-width: 150px; /* Tamaño de la imagen aumentado */
+            max-height: 150px;
             border-radius: 4px;
+            margin-right: 10px;
+            margin-bottom: 10px;
         }
         button {
             display: block;
@@ -52,25 +55,38 @@
         button:hover {
             background-color: #45a049;
         }
-        .draggable {
-            cursor: move;
-            margin: 10px 0;
-            border: 1px dashed #ccc;
+        .method-container {
+            border: 1px solid #ccc;
+            border-radius: 8px;
             padding: 10px;
-            background: #f0f0f0;
+            margin-bottom: 20px;
+        }
+        .method-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .delete-button {
+            background-color: red;
+            margin-left: 10px;
+            border: none;
+            color: white;
+            cursor: pointer;
             border-radius: 5px;
+            padding: 5px;
+        }
+        .delete-button:hover {
+            background-color: darkred;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.10.11/interact.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
     <script>
         const { jsPDF } = window.jspdf;
-        let imagenes = [];
-        let editable = false;
+        let formularios = [];
 
-        function agregarImagen() {
-            const nombre = document.getElementById('nombre').value;
-            const archivo = document.getElementById('archivo').files[0];
+        function agregarImagen(formIndex) {
+            const nombre = document.getElementById(`nombre-${formIndex}`).value;
+            const archivo = document.getElementById(`archivo-${formIndex}`).files[0];
 
             if (!archivo || !nombre) {
                 alert("Por favor, completa ambos campos.");
@@ -79,108 +95,220 @@
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                imagenes.push({ nombre: nombre, src: e.target.result });
+                const imagen = { nombre: nombre, src: e.target.result };
+                formularios[formIndex].imagenes.push(imagen);
+                actualizarListaImagenes(formIndex);
 
-                const table = document.getElementById('imagenesTable');
-                const nuevaFila = table.insertRow();
-                const celdaNombre = nuevaFila.insertCell(0);
-                const celdaImagen = nuevaFila.insertCell(1);
-
-                celdaNombre.innerText = nombre;
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                celdaImagen.appendChild(img);
+                document.getElementById(`nombre-${formIndex}`).value = '';
+                document.getElementById(`archivo-${formIndex}`).value = '';
             }
 
             reader.readAsDataURL(archivo);
+        }
 
-            // Limpiar campos
-            document.getElementById('nombre').value = '';
-            document.getElementById('archivo').value = '';
+        function agregarFormulario() {
+            const nombreArea = document.getElementById('pregunta1').value;
+            const ubicacion = document.getElementById('pregunta2').value;
+            const materiales = document.getElementById('materiales').value;
+            const ancho = document.getElementById('ancho').value;
+            const largo = document.getElementById('largo').value;
+            const alto = document.getElementById('alto').value;
+            const cantidad = document.getElementById('cantidad').value;
+            const tipoExclusion = document.getElementById('tipoExclusion').value;
+            const observaciones = document.getElementById('observaciones').value;
+
+            const nuevoFormulario = {
+                nombreArea,
+                ubicacion,
+                materiales,
+                ancho,
+                largo,
+                alto,
+                cantidad,
+                tipoExclusion,
+                observaciones,
+                imagenes: []
+            };
+
+            formularios.push(nuevoFormulario);
+            document.querySelectorAll('.edit-input').forEach(input => input.value = '');
+            renderizarMetodos();
+        }
+
+        function actualizarListaImagenes(formIndex) {
+            const imageList = document.getElementById(`imageList-${formIndex}`);
+            imageList.innerHTML = '';
+
+            formularios[formIndex].imagenes.forEach((imagen, index) => {
+                const div = document.createElement('div');
+                div.className = 'image-item';
+                div.innerHTML = `
+                    <img src="${imagen.src}" alt="${imagen.nombre}" />
+                    <p>${imagen.nombre}</p>
+                    <button class="delete-button" onclick="eliminarImagen(${formIndex}, ${index})">Eliminar</button>
+                `;
+                imageList.appendChild(div);
+            });
+        }
+
+        function eliminarImagen(formIndex, index) {
+            formularios[formIndex].imagenes.splice(index, 1);
+            actualizarListaImagenes(formIndex);
+        }
+
+        function renderizarMetodos() {
+            const metodoContainer = document.getElementById('metodosContainer');
+            metodoContainer.innerHTML = '';
+
+            formularios.forEach((formulario, index) => {
+                const div = document.createElement('div');
+                div.className = 'method-container';
+                div.innerHTML = `
+                    <div class="method-header">Método de Exclusión ${index + 1}</div>
+                    <p><strong>Nombre de Área:</strong> ${formulario.nombreArea}</p>
+                    <p><strong>Ubicación:</strong> ${formulario.ubicacion}</p>
+                    <p><strong>Material:</strong> ${formulario.materiales}</p>
+                    <p><strong>Ancho:</strong> ${formulario.ancho}</p>
+                    <p><strong>Largo:</strong> ${formulario.largo}</p>
+                    <p><strong>Alto:</strong> ${formulario.alto}</p>
+                    <p><strong>Cantidad:</strong> ${formulario.cantidad}</p>
+                    <p><strong>Tipo de Exclusión:</strong> ${formulario.tipoExclusion}</p>
+                    <p><strong>Observaciones:</strong> ${formulario.observaciones}</p>
+                    <div class="image-list" id="imageList-${index}"></div>
+                    <label for="nombre-${index}">Nombre de la imagen:</label>
+                    <input type="text" id="nombre-${index}" class="edit-input" placeholder="Escribe el nombre de la imagen..." />
+                    <label for="archivo-${index}">Selecciona la imagen:</label>
+                    <input type="file" id="archivo-${index}" accept="image/*" class="edit-input" />
+                    <button type="button" onclick="agregarImagen(${index})">Agregar Imagen</button>
+                `;
+                metodoContainer.appendChild(div);
+                actualizarListaImagenes(index);
+            });
         }
 
         function generarPDF() {
             const doc = new jsPDF();
+            doc.text('MÉTODOS DE EXCLUSIÓN', 10, 10);
+            let currentY = 20; // Posición inicial
 
-            imagenes.forEach((imagen, index) => {
-                if (index > 0) {
-                    doc.addPage();
-                }
-                doc.setFontSize(16);
-                doc.text(imagen.nombre, 10, 10);
-                doc.addImage(imagen.src, 'JPEG', 10, 20, 180, 160);
-            });
+            formularios.forEach((formulario, index) => {
+                const pdfData = [
+                    ["Pregunta", "Respuesta"]
+                ];
 
-            doc.save('imagenes.pdf');
-        }
+                pdfData.push(["Nombre de Área", formulario.nombreArea]);
+                pdfData.push(["Ubicación", formulario.ubicacion]);
+                pdfData.push(["Material", formulario.materiales]);
+                pdfData.push(["Ancho", formulario.ancho]);
+                pdfData.push(["Largo", formulario.largo]);
+                pdfData.push(["Alto", formulario.alto]);
+                pdfData.push(["Cantidad", formulario.cantidad]);
+                pdfData.push(["Tipo de Exclusión", formulario.tipoExclusion]);
+                pdfData.push(["Observaciones", formulario.observaciones]);
 
-        function toggleEdit() {
-            editable = !editable;
-            const elements = document.querySelectorAll('.draggable');
-            elements.forEach(element => {
-                if (editable) {
-                    interact(element).draggable({
-                        listeners: {
-                            move(event) {
-                                const target = event.target;
-                                const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.delta.x;
-                                const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.delta.y;
+                doc.autoTable({
+                    head: [["Pregunta", "Respuesta"]],
+                    body: pdfData,
+                    startY: currentY,
+                });
 
-                                target.style.transform = `translate(${x}px, ${y}px)`;
-                                target.setAttribute('data-x', x);
-                                target.setAttribute('data-y', y);
-                            }
-                        }
-                    });
-                } else {
-                    interact(element).unset();
-                }
-            });
-        }
+                currentY = doc.lastAutoTable.finalY + 10; // Actualizar la posición Y
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Inicializar interact.js para arrastrar
-            const elements = document.querySelectorAll('.draggable');
-            elements.forEach(element => {
-                interact(element).draggable({
-                    listeners: {
-                        move(event) {
-                            if (editable) {
-                                const target = event.target;
-                                const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.delta.x;
-                                const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.delta.y;
+                formulario.imagenes.forEach(imagen => {
+                    const imgData = imagen.src;
+                    const imgWidth = 150; // Ajusta el ancho
+                    const imgHeight = 150; // Ajusta el alto
+                    const spacing = 10;
 
-                                target.style.transform = `translate(${x}px, ${y}px)`;
-                                target.setAttribute('data-x', x);
-                                target.setAttribute('data-y', y);
-                            }
-                        }
+                    // Añadir nombre de la imagen
+                    doc.text(imagen.nombre, 10, currentY);
+                    currentY += 5; // Espacio entre el nombre y la imagen
+                    doc.addImage(imgData, 'JPEG', 10, currentY, imgWidth, imgHeight);
+                    currentY += imgHeight + spacing; // Actualizar la posición Y para la próxima imagen
+
+                    // Verificar si se necesita una nueva página
+                    if (currentY > doc.internal.pageSize.height - 20) {
+                        doc.addPage();
+                        currentY = 10; // Reiniciar posición Y
                     }
                 });
+
+                // Añadir una página nueva entre métodos
+                if (index < formularios.length - 1) {
+                    doc.addPage();
+                    currentY = 10; // Reiniciar posición Y
+                }
             });
-        });
+
+            doc.save('metodos_exclusion.pdf');
+        }
     </script>
 </head>
 <body>
     <div class="container">
-        <h1>Subir Imágenes y Generar PDF</h1>
-        <form class="draggable" onsubmit="event.preventDefault(); agregarImagen();">
-            <label for="nombre">Nombre de la imagen:</label>
-            <input type="text" id="nombre" required style="width: 100%; padding: 8px; margin-bottom: 10px;">
-            <label for="archivo">Selecciona la imagen:</label>
-            <input type="file" id="archivo" accept="image/*" required style="width: 100%; padding: 8px; margin-bottom: 20px;">
-            <button type="submit">Agregar Imagen</button>
+        <h1>Formulario de Métodos de Exclusión</h1>
+
+        <form onsubmit="event.preventDefault(); agregarFormulario();">
+            <div class="question">
+                <label for="pregunta1">Nombre de Área:</label>
+                <input type="text" id="pregunta1" class="edit-input" placeholder="Escribe tu respuesta aquí..." required>
+            </div>
+            <div class="question">
+                <label for="pregunta2">Ubicación:</label>
+                <input type="text" id="pregunta2" class="edit-input" placeholder="Escribe tu respuesta aquí..." required>
+            </div>
+            <label for="materiales">Material:</label>
+            <select id="materiales" required>
+                <option value="" disabled selected>Seleccione</option>
+                <option value="malla_cedazo">Malla Cedazo</option>
+                <option value="malla_anti_paloma">Malla Anti Paloma</option>
+                <option value="angeo_metalico">Ángel Metálico</option>
+                <option value="espuma_polietileno">Espuma Polietileno</option>
+                <option value="cemento">Cemento</option>
+                <option value="tornilleria">Tornillería</option>
+                <option value="banda">Banda</option>
+                <option value="perfil_metalico_pisador">Perfil Metálico Pisador</option>
+                <option value="espigas_metalicas">Espigas Metálicas</option>
+                <option value="silicona">Silicona</option>
+            </select>
+            <div class="question">
+                <label for="ancho">Ancho:</label>
+                <input type="text" id="ancho" class="edit-input" placeholder="Escribe tu respuesta aquí..." required>
+            </div>
+            <div class="question">
+                <label for="largo">Largo:</label>
+                <input type="text" id="largo" class="edit-input" placeholder="Escribe tu respuesta aquí..." required>
+            </div>
+            <div class="question">
+                <label for="alto">Alto:</label>
+                <input type="text" id="alto" class="edit-input" placeholder="Escribe tu respuesta aquí..." required>
+            </div>
+            <div class="question">
+                <label for="cantidad">Cantidad:</label>
+                <input type="text" id="cantidad" class="edit-input" placeholder="Escribe tu respuesta aquí..." required>
+            </div>
+            <label for="tipoExclusion">Tipo de Exclusión:</label>
+            <select id="tipoExclusion" required>
+                <option value="" disabled selected>Seleccione</option>
+                <option value="angeo">Ángel</option>
+                <option value="banda">Banda</option>
+                <option value="mallas">Mallas</option>  
+                <option value="cemento">Cemento</option>
+                <option value="espuma">Espuma</option>
+                <option value="red">Red</option>
+            </select>
+            <div class="question">
+                <label for="observaciones">Observaciones:</label>
+                <input type="text" id="observaciones" class="edit-input" placeholder="Escribe tu respuesta aquí...">
+            </div>
+
+            <button type="submit">Agregar Método de Exclusión</button>
         </form>
 
-        <h2>Imágenes Agregadas</h2>
-        <table id="imagenesTable" class="draggable">
-            <tr>
-                <th>Nombre</th>
-                <th>Imagen</th>
-            </tr>
-        </table>
-        <button class="draggable" onclick="generarPDF()">Generar PDF</button>
-        <button onclick="toggleEdit()">Editar Posiciones</button>
+        <h2>Métodos de Exclusión Agregados</h2>
+        <div id="metodosContainer"></div>
+        
+        <button onclick="generarPDF()">Generar PDF</button>
     </div>
 </body>
 </html>
