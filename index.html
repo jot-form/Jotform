@@ -37,11 +37,9 @@
         function agregarFormulario() {
             const nombreArea = document.getElementById('pregunta1').value;
             const ubicacion = document.getElementById('pregunta2').value;
-            const materiales = document.getElementById('materiales').value;
             const ancho = document.getElementById('ancho').value;
             const largo = document.getElementById('largo').value;
             const alto = document.getElementById('alto').value;
-            const cantidad = document.getElementById('cantidad').value;
             const tipoExclusion = document.getElementById('tipoExclusion').value;
             const observaciones = document.getElementById('observaciones').value;
 
@@ -52,7 +50,6 @@
                 ancho,
                 largo,
                 alto,
-                cantidad,
                 tipoExclusion,
                 observaciones,
                 imagenes: []
@@ -95,11 +92,9 @@
                     <div class="method-header">Método de Exclusión ${index + 1}</div>
                     <p><strong>Nombre de Área:</strong> ${formulario.nombreArea}</p>
                     <p><strong>Ubicación:</strong> ${formulario.ubicacion}</p>
-                    <p><strong>Material:</strong> ${formulario.materiales}</p>
-                    <p><strong>Ancho:</strong> ${formulario.ancho}</p>
-                    <p><strong>Largo:</strong> ${formulario.largo}</p>
-                    <p><strong>Alto:</strong> ${formulario.alto}</p>
-                    <p><strong>Cantidad:</strong> ${formulario.cantidad}</p>
+                    <p><strong>Ancho(mt):</strong> ${formulario.ancho}</p>
+                    <p><strong>Largo(mt):</strong> ${formulario.largo}</p>
+                    <p><strong>Alto(mt):</strong> ${formulario.alto}</p>
                     <p><strong>Tipo de Exclusión:</strong> ${formulario.tipoExclusion}</p>
                     <p><strong>Observaciones:</strong> ${formulario.observaciones}</p>
                     <div class="image-list" id="imageList-${index}"></div>
@@ -126,11 +121,9 @@
 
                 pdfData.push(["Nombre de Área", formulario.nombreArea]);
                 pdfData.push(["Ubicación", formulario.ubicacion]);
-                pdfData.push(["Material", formulario.materiales]);
-                pdfData.push(["Ancho", formulario.ancho]);
-                pdfData.push(["Largo", formulario.largo]);
-                pdfData.push(["Alto", formulario.alto]);
-                pdfData.push(["Cantidad", formulario.cantidad]);
+                pdfData.push(["Ancho(mt)", formulario.ancho]);
+                pdfData.push(["Largo(mt)", formulario.largo]);
+                pdfData.push(["Alto(mt)", formulario.alto]);
                 pdfData.push(["Tipo de Exclusión", formulario.tipoExclusion]);
                 pdfData.push(["Observaciones", formulario.observaciones]);
 
@@ -185,37 +178,18 @@
                 <label for="pregunta2">Ubicación:</label>
                 <input type="text" id="pregunta2" class="form-control" placeholder="Escribe tu respuesta aquí..." required>
             </div>
+
             <div class="form-group">
-                <label for="materiales">Material:</label>
-                <select id="materiales" class="form-control" required>
-                    <option value="" disabled selected>Seleccione</option>
-                    <option value="malla_cedazo">Malla Cedazo</option>
-                    <option value="malla_anti_paloma">Malla Anti Paloma</option>
-                    <option value="angeo_metalico">Angeo Metálico</option>
-                    <option value="espuma_polietileno">Espuma Polietileno</option>
-                    <option value="cemento">Cemento</option>
-                    <option value="tornilleria">Tornillería</option>
-                    <option value="banda">Banda</option>
-                    <option value="perfil_metalico_pisador">Perfil Metálico Pisador</option>
-                    <option value="espigas_metalicas">Espigas Metálicas</option>
-                    <option value="silicona">Silicona</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="ancho">Ancho:</label>
+                <label for="ancho">Ancho(mt):</label>
                 <input type="text" id="ancho" class="form-control" placeholder="Escribe tu respuesta aquí..." required>
             </div>
             <div class="form-group">
-                <label for="largo">Largo:</label>
+                <label for="largo">Largo(mt):</label>
                 <input type="text" id="largo" class="form-control" placeholder="Escribe tu respuesta aquí..." required>
             </div>
             <div class="form-group">
-                <label for="alto">Alto:</label>
+                <label for="alto">Alto(mt):</label>
                 <input type="text" id="alto" class="form-control" placeholder="Escribe tu respuesta aquí..." required>
-            </div>
-            <div class="form-group">
-                <label for="cantidad">Cantidad:</label>
-                <input type="text" id="cantidad" class="form-control" placeholder="Escribe tu respuesta aquí..." required>
             </div>
             <div class="form-group">
                 <label for="tipoExclusion">Tipo de Exclusión:</label>
